@@ -8,4 +8,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Entities\Enums\" />
+    <Folder Include="Entities\Exceptions\" />
+  </ItemGroup>
+
 </Project>
