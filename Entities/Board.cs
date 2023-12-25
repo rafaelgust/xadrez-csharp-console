@@ -25,15 +25,18 @@ namespace xadrez_csharp_console.Entities {
             return position.Row >= 0 && position.Row < Rows && position.Column >= 0 && position.Column < Columns;
         }
 
-        public bool ValidatePosition(Position position) {
+        public bool ValidPosition(Position position) {
             if (!PositionExists(position)) {
                 throw new BoardException("Invalid position!");
+            }
+            if (Piece(position) != null) {
+                throw new BoardException("There is already a piece in this position!");
             }
             return true;
         }
 
         public bool ThereIsAPiece(Position position) {
-            ValidatePosition(position);
+            ValidPosition(position);
             return Piece(position) != null;
         }
 
