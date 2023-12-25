@@ -1,4 +1,5 @@
 ﻿using xadrez_csharp_console.Entities.Enums;
+using xadrez_csharp_console.Entities.Exceptions;
 using xadrez_csharp_console.Entities.PiecesEntity;
 
 namespace xadrez_csharp_console.Entities {
@@ -23,6 +24,17 @@ namespace xadrez_csharp_console.Entities {
             CapturedPieces = new HashSet<Piece>();
             PutPieces();
         }
+
+        public HashSet<Piece> PiecesCaptured(Color pieceColor) {
+            HashSet<Piece> aux = new HashSet<Piece>();
+            foreach (Piece p in CapturedPieces) {
+                if (p.Color != pieceColor) {
+                    aux.Add(p);
+                }
+            }
+            return aux;
+        }
+
         public void PutNewPiece(char column, int row, Piece piece) {
             Board.PutPiece(piece, new ChessPosition(column, row).ToPosition());
             Pieces.Add(piece);
@@ -62,6 +74,24 @@ namespace xadrez_csharp_console.Entities {
             PutNewPiece('f', 7, new Pawn(Board, Color.Black, this));
             PutNewPiece('g', 7, new Pawn(Board, Color.Black, this));
             PutNewPiece('h', 7, new Pawn(Board, Color.Black, this));
+        }
+
+        public void ValidateOriginPosition(Position position) {
+            if (Board.Piece(position) == null) {
+                throw new BoardException("There is no piece in this position!");
+            }
+            if (CurrentPlayer != Board.Piece(position).Color) {
+                throw new BoardException("This piece is not yours!");
+            }
+            if (!Board.Piece(position).HasPossibleMoves()) {
+                throw new BoardException("There are no possible moves for this piece!");
+            }
+        }
+
+        public void ValidateDestinationPosition(Position origin, Position destination) {
+            if (!Board.Piece(origin).CanMoveTo(destination)) {
+                throw new BoardException("Invalid destination position!");
+            }
         }
     }
 }
