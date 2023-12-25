@@ -19,7 +19,7 @@ namespace xadrez_csharp_console {
                     bool[,] possiblePositions = game.Board.Piece(origin).PossibleMoves();
 
                     Console.Clear();
-                    Screen.PrintBoard(game.Board);
+                    Screen.PrintBoard(game.Board, possiblePositions);
 
                     Console.WriteLine();
                     Console.Write("Destination: ");
