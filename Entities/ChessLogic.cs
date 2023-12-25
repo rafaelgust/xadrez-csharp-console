@@ -93,5 +93,47 @@ namespace xadrez_csharp_console.Entities {
                 throw new BoardException("Invalid destination position!");
             }
         }
+
+        public Piece PerformMove(Position origin, Position destination) {
+            Piece piece = Board.RemovePiece(origin);
+            piece.IncrementMoves();
+            Piece capturedPiece = Board.RemovePiece(destination);
+            Board.PutPiece(piece, destination);
+            if (capturedPiece != null) {
+                CapturedPieces.Add(capturedPiece);
+            }
+
+            // #SpecialMove Castling
+            if (piece is King && destination.Column == origin.Column + 2) {
+                Position originRook = new Position(origin.Row, origin.Column + 3);
+                Position destinationRook = new Position(origin.Row, origin.Column + 1);
+                Piece rook = Board.RemovePiece(originRook);
+                rook.IncrementMoves();
+                Board.PutPiece(rook, destinationRook);
+            }
+            if (piece is King && destination.Column == origin.Column - 2) {
+                Position originRook = new Position(origin.Row, origin.Column - 4);
+                Position destinationRook = new Position(origin.Row, origin.Column - 1);
+                Piece rook = Board.RemovePiece(originRook);
+                rook.IncrementMoves();
+                Board.PutPiece(rook, destinationRook);
+            }
+
+            // #SpecialMove En Passant
+            if (piece is Pawn) {
+                if (origin.Column != destination.Column && capturedPiece == null) {
+                    Position pawnPosition;
+                    if (piece.Color == Color.White) {
+                        pawnPosition = new Position(destination.Row + 1, destination.Column);
+                    } else {
+                        pawnPosition = new Position(destination.Row - 1, destination.Column);
+                    }
+                    capturedPiece = Board.RemovePiece(pawnPosition);
+                    CapturedPieces.Add(capturedPiece);
+                }
+            }
+
+            return capturedPiece;
+        }
     }
 }

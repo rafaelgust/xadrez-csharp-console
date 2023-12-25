@@ -48,11 +48,14 @@ namespace xadrez_csharp_console.Entities {
             piece.Position = position;
         }
 
-        public void RemovePiece(Position position) {
+        public Piece RemovePiece(Position position) {
             if (Piece(position) == null) {
-                throw new BoardException("There is no piece in this position!");
+                return null;
             }
+            Piece aux = Piece(position);
+            aux.Position = null;
             Pieces[position.Row, position.Column] = null;
+            return aux;
         }
 
     }
